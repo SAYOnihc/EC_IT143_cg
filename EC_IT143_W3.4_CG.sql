@@ -31,13 +31,13 @@ Resources used:
 -- A1: AdventureWorks has had transactions with 274 unique citites.
 
 SELECT COUNT(DISTINCT addr.City) AS UniqueCityTransactionCount
-		FROM Sales.SalesOrderHeader soh
-		JOIN Sales.Customer cust
-		  ON soh.CustomerID = cust.CustomerID
-		JOIN Person.BusinessEntityAddress bea
-		  ON cust.PersonID = bea.BusinessEntityID
-		JOIN Person.Address addr
-		  ON bea.AddressID = addr.AddressID;
+	FROM Sales.SalesOrderHeader soh
+	JOIN Sales.Customer cust
+	  ON soh.CustomerID = cust.CustomerID
+	JOIN Person.BusinessEntityAddress bea
+	  ON cust.PersonID = bea.BusinessEntityID
+	JOIN Person.Address addr
+	  ON bea.AddressID = addr.AddressID;
 
 -- Q2: How many employees are currently working in the Sales department? (Alexis Fox)
 -- Reworked question: How many employees are there in Sales?
@@ -45,16 +45,16 @@ SELECT COUNT(DISTINCT addr.City) AS UniqueCityTransactionCount
 -- Step 2) Combine with EmployeeDepartmentHistory to see who is employed
 -- Step 3) Isolate the Sales department with the Department table
 -- Step 4) Indicate that we only need current employees returned
--- A2: 18
+-- A2: 18 employees are currently working in the Sales department.
 
 SELECT COUNT(DISTINCT emp.BusinessEntityID) AS SalesEmployeeCount
-		FROM HumanResources.Employee emp
-		JOIN HumanResources.EmployeeDepartmentHistory edh
-		  ON emp.BusinessEntityID = edh.BusinessEntityID
-		JOIN HumanResources.Department dep
-		  ON edh.DepartmentID = dep.DepartmentID
-	   WHERE dep.Name = 'Sales'
-		 AND edh.EndDate IS NULL; -- Having no end date means they are currently employed
+	FROM HumanResources.Employee emp
+	JOIN HumanResources.EmployeeDepartmentHistory edh
+	  ON emp.BusinessEntityID = edh.BusinessEntityID
+	JOIN HumanResources.Department dep
+	  ON edh.DepartmentID = dep.DepartmentID
+	WHERE dep.Name = 'Sales'
+	 AND edh.EndDate IS NULL; -- Having no end date means they are currently employed
 
 -- Q3: We are suspiciously over budget. Return our top 50 most expensive transactions according to actual cost. What are their ProductIDs and their standard cost as recorded in the product cost history? (Chino Guerrero)
 --Reworked question: What are the top 50 most expensive actual cost transactions, and what are their ProductIDs and standard cost?
@@ -76,13 +76,13 @@ SELECT TOP 50
     FORMAT(pch.StandardCost, 'C', 'en-US') AS StandardCost
 	FROM Sales.SalesOrderDetail sod
 	JOIN Production.Product p
-      ON sod.ProductID = p.ProductID
+      	  ON sod.ProductID = p.ProductID
 	JOIN Production.ProductCostHistory pch
-      ON p.ProductID = pch.ProductID
+      	  ON p.ProductID = pch.ProductID
 	WHERE pch.StartDate = (
-        SELECT MAX(StartDate) 
-        FROM Production.ProductCostHistory 
-        WHERE ProductID = p.ProductID
+SELECT MAX(StartDate) 
+  FROM Production.ProductCostHistory 
+ WHERE ProductID = p.ProductID
     )
 ORDER BY sod.LineTotal DESC;
 
